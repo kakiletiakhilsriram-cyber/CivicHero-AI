@@ -1,0 +1,11 @@
+{
+  "name": "CivicHero AI",
+  "description": "AI-powered Hyperlocal Community Problem Solver using Autonomous AI Agents to analyze, prioritize, route, and verify civic issues.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
