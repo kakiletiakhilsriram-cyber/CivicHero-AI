@@ -467,8 +467,12 @@ app.post("/api/issues/analyze", async (req, res) => {
       } else {
         useSimulation = true;
       }
-    } catch (err) {
-      console.error("Gemini Vision processing error, falling back to smart simulation:", err);
+    } catch (err: any) {
+      if (err?.status === 429) {
+        console.warn("Gemini Vision quota exceeded, falling back to smart simulation.");
+      } else {
+        console.error("Gemini Vision processing error, falling back to smart simulation:", err);
+      }
       useSimulation = true;
     }
   }
@@ -939,8 +943,12 @@ app.get("/api/predictions", async (req, res) => {
       if (Array.isArray(parsed) && parsed.length > 0) {
         return res.json(parsed);
       }
-    } catch (err) {
-      console.error("Gemini predictive error, serving cached defaults:", err);
+    } catch (err: any) {
+      if (err?.status === 429) {
+        console.warn("Gemini predictive quota exceeded, serving cached defaults.");
+      } else {
+        console.error("Gemini predictive error, serving cached defaults:", err);
+      }
     }
   }
 
@@ -991,8 +999,12 @@ app.post("/api/chat", async (req, res) => {
 
       const response = await chat.sendMessage({ message });
       return res.json({ text: response.text });
-    } catch (err) {
-      console.error("Gemini Chat Error, applying simulated intelligent responder:", err);
+    } catch (err: any) {
+      if (err?.status === 429) {
+        console.warn("Gemini Chat quota exceeded, falling back to simulated responder.");
+      } else {
+        console.error("Gemini Chat Error, applying simulated intelligent responder:", err);
+      }
     }
   }
 
