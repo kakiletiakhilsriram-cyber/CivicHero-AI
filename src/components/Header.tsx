@@ -12,7 +12,9 @@ import {
   Home, 
   CheckSquare,
   ShieldCheck,
-  ChevronDown
+  ChevronDown,
+  Gift,
+  Wrench
 } from "lucide-react";
 import { UserProfile, UserRole } from "../types";
 
@@ -22,6 +24,7 @@ interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   notificationCount: number;
+  onLogout: () => void;
 }
 
 export default function Header({ 
@@ -29,22 +32,35 @@ export default function Header({
   onChangeRole, 
   activeTab, 
   setActiveTab,
-  notificationCount 
+  notificationCount,
+  onLogout
 }: HeaderProps) {
-  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const roles: UserRole[] = ["Citizen", "Volunteer", "Department Officer", "Administrator"];
+  const getAllowedTabs = () => {
+    const role = currentUser.role;
+    const base = [
+      { id: "dashboard", label: "Dashboard", icon: Home },
+      { id: "map", label: "Interactive Map", icon: MapPin },
+      { id: "report", label: "Report Issue", icon: PlusCircle, highlight: true },
+      { id: "leaderboard", label: "Leaderboard", icon: Trophy },
+      { id: "rewards", label: "Rewards", icon: Gift },
+      { id: "chat", label: "AI Chatbot", icon: MessageSquare },
+    ];
+    if (role === "Volunteer" || role === "Department Officer" || role === "Administrator") {
+      base.push({ id: "verify", label: "Verify Issues", icon: CheckSquare });
+    }
+    if (role === "Department Officer" || role === "Administrator") {
+      base.push({ id: "admin", label: "Admin Panel", icon: Wrench });
+    }
+    if (role === "Administrator") {
+      base.push({ id: "predictions", label: "AI Predictions", icon: Cpu });
+      base.push({ id: "analytics", label: "Analytics", icon: BarChart3 });
+    }
+    return base;
+  };
 
-  const tabs = [
-    { id: "dashboard", label: "Dashboard", icon: Home },
-    { id: "map", label: "Interactive Map", icon: MapPin },
-    { id: "report", label: "Report Issue", icon: PlusCircle, highlight: true },
-    { id: "verify", label: "Verify Issues", icon: CheckSquare },
-    { id: "leaderboard", label: "Leaderboard", icon: Trophy },
-    { id: "predictions", label: "AI Predictions", icon: Cpu },
-    { id: "analytics", label: "Analytics", icon: BarChart3 },
-    { id: "chat", label: "AI Chatbot", icon: MessageSquare },
-  ];
+  const tabs = getAllowedTabs();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[#E0E0E0] bg-white/95 backdrop-blur-md">
@@ -110,8 +126,7 @@ export default function Header({
           {/* Interactive User Persona Dropdown */}
           <div className="relative">
             <button
-              id="role-dropdown-btn"
-              onClick={() => setShowRoleDropdown(!showRoleDropdown)}
+              onClick={() => setShowDropdown(!showDropdown)}
               className="flex items-center gap-2 rounded-lg border border-[#E0E0E0] bg-white p-1.5 pr-3 hover:bg-gray-50 transition-colors"
             >
               <img 
@@ -119,40 +134,14 @@ export default function Header({
                 alt={currentUser.name} 
                 className="h-7 w-7 rounded-md object-cover ring-2 ring-[#4285F4]/15"
               />
-              <div className="hidden md:block text-left">
-                <p className="text-xs font-bold text-[#202124] leading-tight">{currentUser.name}</p>
-                <p className="text-[10px] font-medium text-[#1967D2]">{currentUser.role}</p>
-              </div>
               <ChevronDown className="h-4 w-4 text-[#5F6368]" />
             </button>
 
             {/* Dropdown Menu */}
-            {showRoleDropdown && (
-              <div className="absolute right-0 mt-2 w-56 rounded-lg border border-[#E0E0E0] bg-white p-2 shadow-lg ring-1 ring-black/5 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                <div className="px-3 py-2 border-b border-gray-100">
-                  <p className="text-[11px] font-mono tracking-wider uppercase text-[#5F6368]">Switch Persona (Tester Tool)</p>
-                  <p className="text-xs text-[#5F6368]">Cycle roles to test advanced dashboards</p>
-                </div>
-                <div className="mt-1 space-y-0.5">
-                  {roles.map((r) => (
-                    <button
-                      key={r}
-                      id={`role-opt-${r.toLowerCase().replace(" ", "-")}`}
-                      onClick={() => {
-                        onChangeRole(r);
-                        setShowRoleDropdown(false);
-                      }}
-                      className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-xs font-medium transition-colors ${
-                        currentUser.role === r 
-                          ? "bg-[#E8F0FE] text-[#1967D2]" 
-                          : "text-[#5F6368] hover:bg-gray-50 hover:text-[#202124]"
-                      }`}
-                    >
-                      <span>{r}</span>
-                      {currentUser.role === r && <ShieldCheck className="h-4 w-4 text-[#1967D2]" />}
-                    </button>
-                  ))}
-                </div>
+            {showDropdown && (
+              <div className="absolute right-0 mt-2 w-48 rounded-lg border border-[#E0E0E0] bg-white p-2 shadow-lg z-50">
+                <button onClick={() => { setActiveTab("profile"); setShowDropdown(false); }} className="w-full text-left px-3 py-2 text-xs font-bold hover:bg-gray-50">My Profile</button>
+                <button onClick={onLogout} className="w-full text-left px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50">Sign Out</button>
               </div>
             )}
           </div>

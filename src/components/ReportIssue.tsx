@@ -40,32 +40,7 @@ export default function ReportIssue({
   const [submitting, setSubmitting] = useState(false);
 
   // Preset Evidence Images for convenient demo evaluation
-  const PRESET_EVIDENCE = [
-    {
-      id: "preset_pothole",
-      label: "Main Street Pothole",
-      image: "https://images.unsplash.com/photo-1515162305285-0293e4767cc2?auto=format&fit=crop&w=800&h=500&q=80",
-      location: { latitude: 37.7749, longitude: -122.4194, address: "1050 Market St, San Francisco, CA" }
-    },
-    {
-      id: "preset_garbage",
-      label: "Mission St Trash Dump",
-      image: "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=800&h=500&q=80",
-      location: { latitude: 37.7599, longitude: -122.4148, address: "24th St & Mission St, San Francisco, CA" }
-    },
-    {
-      id: "preset_leakage",
-      label: "Haight St Utility Water Leak",
-      image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&h=500&q=80",
-      location: { latitude: 37.7649, longitude: -122.4494, address: "1850 Haight St, San Francisco, CA" }
-    },
-    {
-      id: "preset_tree",
-      label: "Outer Geary Fallen Tree Branch",
-      image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&h=500&q=80",
-      location: { latitude: 37.7799, longitude: -122.4794, address: "3400 Geary Blvd, San Francisco, CA" }
-    }
-  ];
+  const PRESET_EVIDENCE: any[] = [];
 
   // Capture location automatically on mount
   useEffect(() => {
@@ -89,10 +64,10 @@ export default function ReportIssue({
           setFetchingLocation(false);
         },
         (err) => {
-          console.warn("Geolocation permission blocked or timed out, applying San Francisco sector coordinates.");
-          // Fallback San Francisco CA
-          const lat = 37.7749 + (Math.random() - 0.5) * 0.02;
-          const lng = -122.4194 + (Math.random() - 0.5) * 0.02;
+          console.warn("Geolocation permission blocked or timed out, applying Hyderabad sector coordinates.");
+          // Fallback Hyderabad, India
+          const lat = 17.3850 + (Math.random() - 0.5) * 0.02;
+          const lng = 78.4867 + (Math.random() - 0.5) * 0.02;
           setLocation({ latitude: lat, longitude: lng });
           setLocationAddress(`GPS Sector Area (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
           setFetchingLocation(false);

@@ -85,12 +85,12 @@ export default function InteractiveMap({
   const [selectedIssue, setSelectedIssue] = useState<CivicIssue | null>(null);
   const [tempPin, setTempPin] = useState<{ lat: number; lng: number; address: string } | null>(null);
 
-  // San Francisco bounding box for mock coordinate mapping (fallback)
+  // Hyderabad bounding box for mock coordinate mapping (fallback)
   const MAP_BOUNDS = {
-    minLat: 37.7500,
-    maxLat: 37.7900,
-    minLng: -122.4900,
-    maxLng: -122.4000
+    minLat: 17.40,
+    maxLat: 17.50,
+    minLng: 78.30,
+    maxLng: 78.40
   };
 
   // Map lat/lng coordinates to standard SVG coordinates (percent 0-100)
@@ -111,12 +111,12 @@ export default function InteractiveMap({
     const lat = MAP_BOUNDS.minLat + (1 - clickY / 100) * (MAP_BOUNDS.maxLat - MAP_BOUNDS.minLat);
 
     const addresses = [
-      "Union St & Fillmore St, SF",
-      "Gough St & Geary Blvd, SF",
-      "Valencia St & 18th St, SF",
-      "Lombard St & Van Ness Ave, SF",
-      "Market St & 5th St, SF",
-      "Divisadero St & McAllister St, SF"
+      "Jubilee Hills Rd, Hyderabad, IN",
+      "Madhapur Main Rd, Hyderabad, IN",
+      "Kondapur Rd, Hyderabad, IN",
+      "Hitech City Main Rd, Hyderabad, IN",
+      "Banjara Hills Rd, Hyderabad, IN",
+      "Gachibowli Rd, Hyderabad, IN"
     ];
     const address = addresses[Math.floor(Math.random() * addresses.length)];
 
@@ -127,12 +127,12 @@ export default function InteractiveMap({
   // Google Maps click event handler
   const handleGoogleMapClick = (lat: number, lng: number) => {
     const addresses = [
-      "Union St & Fillmore St, SF",
-      "Gough St & Geary Blvd, SF",
-      "Valencia St & 18th St, SF",
-      "Lombard St & Van Ness Ave, SF",
-      "Market St & 5th St, SF",
-      "Divisadero St & McAllister St, SF"
+      "Jubilee Hills Rd, Hyderabad, IN",
+      "Madhapur Main Rd, Hyderabad, IN",
+      "Kondapur Rd, Hyderabad, IN",
+      "Hitech City Main Rd, Hyderabad, IN",
+      "Banjara Hills Rd, Hyderabad, IN",
+      "Gachibowli Rd, Hyderabad, IN"
     ];
     const address = addresses[Math.floor(Math.random() * addresses.length)];
 
@@ -281,7 +281,7 @@ export default function InteractiveMap({
             <APIProvider apiKey={API_KEY} version="weekly" libraries={["visualization"]}>
               <Map
                 mapId="7a9e2ebecd32a903"
-                defaultCenter={{ lat: 37.7749, lng: -122.4194 }}
+                defaultCenter={{ lat: 17.4468, lng: 78.3635 }}
                 defaultZoom={13}
                 gestureHandling="greedy"
                 disableDefaultUI={true}

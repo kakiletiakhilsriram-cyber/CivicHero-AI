@@ -8,6 +8,7 @@ interface LeaderboardProps {
 
 export default function Leaderboard({ currentUser, leaderboardData }: LeaderboardProps) {
   const sortedUsers = [...leaderboardData].sort((a, b) => b.points - a.points);
+  const myRank = sortedUsers.findIndex(u => u.id === currentUser.id) + 1;
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Medal className="h-5 w-5 text-amber-500 fill-amber-100" />;
@@ -65,7 +66,7 @@ export default function Leaderboard({ currentUser, leaderboardData }: Leaderboar
               </div>
               <div className="bg-white/5 p-2 rounded-xl">
                 <p className="text-[10px] text-slate-400">Your Rank</p>
-                <p className="text-xl font-bold text-emerald-400">#{currentUser.rank}</p>
+                <p className="text-xl font-bold text-emerald-400">#{myRank}</p>
               </div>
             </div>
 

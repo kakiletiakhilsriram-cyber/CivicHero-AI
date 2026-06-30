@@ -112,128 +112,7 @@ const DEFAULT_USERS: UserProfile[] = [
   }
 ];
 
-const DEFAULT_ISSUES: CivicIssue[] = [
-  {
-    id: "issue_1",
-    title: "Large Pothole causing Swerving on Main St",
-    description: "A wide and deep pothole on Main St, right before the school crosswalk. Vehicles are swerving into oncoming traffic to avoid it, creating an extreme safety hazard during drop-off hours.",
-    category: "Road Damage",
-    severity: "high",
-    confidenceScore: 94,
-    estimatedSize: "1.2 meters wide, 15cm deep",
-    publicRisk: "High collision risk next to elementary school crossing zone",
-    suggestedDepartment: "Roads Department",
-    department: "Roads Department",
-    location: {
-      latitude: 37.7749,
-      longitude: -122.4194,
-      address: "1050 Market St, San Francisco, CA"
-    },
-    reporterId: "user_citizen",
-    reporterName: "Alex Johnson",
-    image: "https://images.unsplash.com/photo-1515162305285-0293e4767cc2?auto=format&fit=crop&w=800&h=500&q=80",
-    status: "in_progress",
-    timeline: [
-      { status: "reported", timestamp: "2026-06-23T10:00:00Z", remarks: "Issue reported by Alex Johnson. Gemini autonomous agent classified and routed." },
-      { status: "verified", timestamp: "2026-06-23T11:15:00Z", remarks: "Community verification completed. Trust confidence escalated to 94%." },
-      { status: "assigned", timestamp: "2026-06-24T08:30:00Z", remarks: "Assigned to Roads Repair Team 4.", officer: "Chief Officer Marcus" },
-      { status: "in_progress", timestamp: "2026-06-24T14:00:00Z", remarks: "Crew is scheduled to repair the pothole on Friday morning." }
-    ],
-    votes: 14,
-    votedUserIds: ["user_volunteer"],
-    deviceInfo: "iPhone 15 Pro Max, Safari Mobile",
-    createdAt: "2026-06-23T10:00:00Z"
-  },
-  {
-    id: "issue_2",
-    title: "Overflowing Garbage and Hazardous Waste Dumping",
-    description: "Illegal dumping of plastics, electronics, and standard municipal bins overflowing onto the sidewalk. Attracting rodents and blocking pedestrian traffic.",
-    category: "Garbage",
-    severity: "medium",
-    confidenceScore: 88,
-    estimatedSize: "Approximately 3 cubic meters",
-    publicRisk: "Biological threat, vermin hazard, and ADA walkway obstruction",
-    suggestedDepartment: "Municipality",
-    department: "Municipality",
-    location: {
-      latitude: 37.7599,
-      longitude: -122.4148,
-      address: "24th St & Mission St, San Francisco, CA"
-    },
-    reporterId: "user_volunteer",
-    reporterName: "Samantha Green",
-    image: "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=800&h=500&q=80",
-    status: "reported",
-    timeline: [
-      { status: "reported", timestamp: "2026-06-25T15:30:00Z", remarks: "Citizen uploaded image evidence. Gemini Vision diagnosed structural waste dumping. Routed to Municipal Sanitation." }
-    ],
-    votes: 5,
-    votedUserIds: [],
-    deviceInfo: "Google Pixel 8, Chrome Mobile",
-    createdAt: "2026-06-25T15:30:00Z"
-  },
-  {
-    id: "issue_3",
-    title: "Water Pipeline Burst with Flooding on Sidewalk",
-    description: "Significant high-pressure clean water leakage from the underground utility valve. Water is pooling into a large puddle and starting to erode the surrounding soil.",
-    category: "Water Leakage",
-    severity: "critical",
-    confidenceScore: 97,
-    estimatedSize: "Water flow at approx 20 gallons/min",
-    publicRisk: "Severe clean water wastage, local localized flooding, and road base undermining",
-    suggestedDepartment: "Water Board",
-    department: "Water Board",
-    location: {
-      latitude: 37.7649,
-      longitude: -122.4494,
-      address: "1850 Haight St, San Francisco, CA"
-    },
-    reporterId: "user_citizen",
-    reporterName: "Alex Johnson",
-    image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&h=500&q=80",
-    status: "verified",
-    timeline: [
-      { status: "reported", timestamp: "2026-06-24T09:00:00Z", remarks: "Reported by resident. Gemini Vision estimated a high burst velocity." },
-      { status: "verified", timestamp: "2026-06-24T10:10:00Z", remarks: "Verified by 3 independent neighborhood volunteers with 98% confidence score." }
-    ],
-    votes: 21,
-    votedUserIds: ["user_citizen", "user_volunteer"],
-    deviceInfo: "Samsung S24 Ultra",
-    createdAt: "2026-06-24T09:00:00Z"
-  },
-  {
-    id: "issue_4",
-    title: "Large Pine Tree limb blocking public street lane",
-    description: "After last night's high winds, a major oak tree branch snapped and is lying flat across the right lane of Geary Blvd. Drivers are forced to merge abruptly.",
-    category: "Tree Fallen",
-    severity: "critical",
-    confidenceScore: 99,
-    estimatedSize: "6 meters long branch",
-    publicRisk: "Extremely high vehicle collision potential and street blockage",
-    suggestedDepartment: "Forest Department",
-    department: "Forest Department",
-    location: {
-      latitude: 37.7799,
-      longitude: -122.4794,
-      address: "3400 Geary Blvd, San Francisco, CA"
-    },
-    reporterId: "user_volunteer",
-    reporterName: "Samantha Green",
-    image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&h=500&q=80",
-    status: "resolved",
-    timeline: [
-      { status: "reported", timestamp: "2026-06-22T06:00:00Z", remarks: "Emergency incident created. Autonomous agents identified immediate blocking hazard." },
-      { status: "verified", timestamp: "2026-06-22T06:15:00Z", remarks: "Police / community verified obstacle status." },
-      { status: "assigned", timestamp: "2026-06-22T06:30:00Z", remarks: "Routed to Forest Dept rapid-response crew.", officer: "Chief Officer Marcus" },
-      { status: "in_progress", timestamp: "2026-06-22T07:00:00Z", remarks: "Chainsaw crew dispatched to cut and clear debris." },
-      { status: "resolved", timestamp: "2026-06-22T08:15:00Z", remarks: "Street is fully cleared and swept clean. Resolved within 2 hours.", media: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&h=500&q=80" }
-    ],
-    votes: 35,
-    votedUserIds: ["user_citizen"],
-    deviceInfo: "Pixel 7a",
-    createdAt: "2026-06-22T06:00:00Z"
-  }
-];
+const DEFAULT_ISSUES: CivicIssue[] = [];
 
 const DEFAULT_PREDICTIONS: InfrastructurePrediction[] = [
   {
@@ -404,11 +283,47 @@ app.get("/api/auth/profile", (req, res) => {
   res.json(user);
 });
 
-app.post("/api/auth/profile/role", (req, res) => {
-  const { userId, newRole } = req.body;
-  const userIdx = db.users.findIndex(u => u.id === userId);
+// Authentication Verification
+app.post("/api/auth/verify", (req, res) => {
+  const { email, password } = req.body;
+  const user = db.users.find(u => u.email === email);
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(401).json({ error: "Invalid email or account does not exist." });
+  }
+});
+
+// Authentication Signup
+app.post("/api/auth/signup", (req, res) => {
+  const { name, email, password, role, photo } = req.body;
+  if (db.users.find(u => u.email === email)) {
+    return res.status(400).json({ error: "Email already in use." });
+  }
+  const newUser: UserProfile = {
+    id: "user_" + email.split("@")[0],
+    name,
+    email,
+    photo: photo || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80",
+    role: role as UserRole,
+    points: 0,
+    badges: [],
+    reportsCount: 0,
+    verifiedReports: 0,
+    resolvedReports: 0,
+    rank: 10,
+    trustScore: 50,
+  };
+  db.users.push(newUser);
+  saveDB();
+  res.status(201).json(newUser);
+});
+
+app.post("/api/auth/profile/update", (req, res) => {
+  const updatedUser = req.body;
+  const userIdx = db.users.findIndex(u => u.id === updatedUser.id);
   if (userIdx !== -1) {
-    db.users[userIdx].role = newRole as UserRole;
+    db.users[userIdx] = { ...db.users[userIdx], ...updatedUser };
     saveDB();
     res.json(db.users[userIdx]);
   } else {
@@ -448,33 +363,7 @@ app.post("/api/issues/analyze", async (req, res) => {
 
   const reporter = db.users.find(u => u.id === reporterId) || db.users[0];
 
-  // 1. DUPLICATE DETECTION (Haversine threshold: 150 meters)
-  const DUPLICATE_RADIUS_KM = 0.15; // 150m
-  const nearbyIssues = db.issues.filter(issue => {
-    if (issue.duplicateOfId) return false; // Skip existing duplicates
-    const dist = getDistanceKm(location.latitude, location.longitude, issue.location.latitude, issue.location.longitude);
-    return dist <= DUPLICATE_RADIUS_KM && issue.status !== "closed";
-  });
-
-  // Keep a reference to potential duplicates
-  const potentialDuplicates = nearbyIssues.map(issue => ({
-    id: issue.id,
-    title: issue.title,
-    category: issue.category,
-    status: issue.status,
-    distanceM: Math.round(getDistanceKm(location.latitude, location.longitude, issue.location.latitude, issue.location.longitude) * 1000)
-  }));
-
-  if (potentialDuplicates.length > 0) {
-    // Found potential duplicates nearby!
-    return res.json({
-      duplicateFound: true,
-      potentialDuplicates,
-      message: "An identical or nearby civic issue already exists in this radius."
-    });
-  }
-
-  // 2. RUN AUTONOMOUS AGENT (Gemini Vision or Simulation if key is missing)
+  // 0. RUN AUTONOMOUS AGENT (Gemini Vision or Simulation if key is missing)
   const ai = getGeminiClient();
   let aiResults: any = null;
   let useSimulation = !ai || !image;
@@ -585,46 +474,47 @@ app.post("/api/issues/analyze", async (req, res) => {
   }
 
   if (useSimulation || !aiResults) {
-    // SMART LOCALLY-DRIVEN SIMULATED ANALYSIS
-    // Since we want this to work beautifully without an API key immediately:
-    // Let's look at the image name or text indicators to choose a category, or pick randomly but beautifully.
-    const prompts = ["broken light", "leak", "pothole", "garbage", "tree", "drain"];
-    let matched = "Road Damage";
-    let title = "Asphalt and Road Crack reported";
-    let dept = "Roads Department";
-
-    if (image && image.includes("unsplash")) {
-      if (image.includes("515162305285")) {
-        matched = "Road Damage";
-        title = "Pothole on Asphalt Lane";
-        dept = "Roads Department";
-      } else if (image.includes("611284446314")) {
-        matched = "Garbage";
-        title = "Overflowing Public Refuse Container";
-        dept = "Municipality";
-      } else if (image.includes("1558981806")) {
-        matched = "Water Leakage";
-        title = "Severe Water Pipe Joint Burst";
-        dept = "Water Board";
-      } else if (image.includes("1513836279")) {
-        matched = "Tree Fallen";
-        title = "Snapped Tree Obstacle across Highway";
-        dept = "Forest Department";
-      }
-    }
-
+    // FALLBACK: User must manually categorize and title if AI fails
     aiResults = {
-      title: title,
-      category: matched,
-      description: "A community issue detected via image upload. Ground telemetry validated. High public utility interruption index.",
-      severity: matched === "Water Leakage" || matched === "Tree Fallen" ? "critical" : "high",
-      confidenceScore: 92,
-      estimatedSize: matched === "Tree Fallen" ? "5.5 meters" : "1.2 meters",
-      publicRisk: matched === "Road Damage" ? "Tire puncture and swerving risk" : "Environmental hazard",
-      suggestedDepartment: dept,
-      urgencyReasoning: "Located within 200m of busy metropolitan intersection. Elevated risk of pedestrian accidents."
+      title: "",
+      category: "Road Damage", // Default to safe category
+      description: "Please describe the issue shown in the image.",
+      severity: "medium",
+      confidenceScore: 0,
+      estimatedSize: "N/A",
+      publicRisk: "N/A",
+      suggestedDepartment: "Municipality",
+      urgencyReasoning: "Awaiting user input."
     };
   }
+
+  // 1. DUPLICATE DETECTION (Haversine threshold: 150 meters, AND category match)
+  const DUPLICATE_RADIUS_KM = 0.15; // 150m
+  const nearbyIssues = db.issues.filter(issue => {
+    if (issue.duplicateOfId) return false; // Skip existing duplicates
+    const dist = getDistanceKm(location.latitude, location.longitude, issue.location.latitude, issue.location.longitude);
+    return dist <= DUPLICATE_RADIUS_KM && issue.status !== "closed" && issue.category === aiResults.category;
+  });
+
+  // Keep a reference to potential duplicates
+  const potentialDuplicates = nearbyIssues.map(issue => ({
+    id: issue.id,
+    title: issue.title,
+    category: issue.category,
+    status: issue.status,
+    distanceM: Math.round(getDistanceKm(location.latitude, location.longitude, issue.location.latitude, issue.location.longitude) * 1000)
+  }));
+
+  if (potentialDuplicates.length > 0) {
+    // Found potential duplicates nearby!
+    return res.json({
+      duplicateFound: true,
+      potentialDuplicates,
+      message: "An identical or nearby civic issue already exists in this radius."
+    });
+  }
+
+
 
   res.json({
     duplicateFound: false,

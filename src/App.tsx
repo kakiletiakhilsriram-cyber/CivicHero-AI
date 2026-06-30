@@ -25,101 +25,120 @@ import AIChat from "./components/AIChat";
 import Notifications from "./components/Notifications";
 import AdminPanel from "./components/AdminPanel";
 import VerificationPanel from "./components/VerificationPanel";
+import AuthPage from "./components/AuthPage";
+import ProfilePage from "./components/ProfilePage";
 
 const DEFAULT_USERS: UserProfile[] = [
   {
     id: "user_citizen",
     name: "Alex Johnson",
-    email: "alex@example.com",
+    email: "citizen@civichero.org",
     role: "Citizen" as UserRole,
-    points: 180,
+    points: 170,
     trustScore: 85,
     badges: ["Community Hero"],
-    photo: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100&q=80",
-    reportsCount: 4,
-    verifiedReports: 2,
+    photo: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80",
+    reportsCount: 3,
+    verifiedReports: 3,
     resolvedReports: 1,
-    rank: 12
+    rank: 4
   },
   {
     id: "user_volunteer",
-    name: "Samantha Miller",
-    email: "samantha@example.com",
+    name: "Samantha Green",
+    email: "volunteer@civichero.org",
     role: "Volunteer" as UserRole,
-    points: 420,
+    points: 450,
     trustScore: 98,
-    badges: ["Neighborhood Guardian", "Top Verifier"],
-    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80",
+    badges: ["Top Verifier", "Neighborhood Guardian"],
+    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
     reportsCount: 8,
     verifiedReports: 12,
-    resolvedReports: 5,
-    rank: 3
+    resolvedReports: 4,
+    rank: 1
   },
   {
     id: "user_officer",
-    name: "Officer Chief Marcus",
-    email: "marcus@example.com",
+    name: "Chief Officer Marcus",
+    email: "officer@civichero.org",
     role: "Department Officer" as UserRole,
-    points: 1200,
+    points: 150,
     trustScore: 100,
     badges: ["Problem Solver"],
-    photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&h=100&q=80",
-    reportsCount: 15,
-    verifiedReports: 45,
-    resolvedReports: 30,
-    rank: 1
+    photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&h=150&q=80",
+    reportsCount: 0,
+    verifiedReports: 15,
+    resolvedReports: 12,
+    rank: 3
   },
   {
     id: "user_admin",
-    name: "Supervisor Daniel Craig",
-    email: "daniel@example.com",
+    name: "Elena Rostova",
+    email: "admin@civichero.org",
     role: "Administrator" as UserRole,
-    points: 2150,
+    points: 200,
     trustScore: 100,
     badges: ["Problem Solver", "Community Hero"],
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&h=100&q=80",
-    reportsCount: 22,
-    verifiedReports: 94,
-    resolvedReports: 78,
-    rank: 1
+    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&h=150&q=80",
+    reportsCount: 1,
+    verifiedReports: 20,
+    resolvedReports: 18,
+    rank: 2
   }
 ];
 
 export default function App() {
   // Global States
-  const [activeTab, setActiveTab] = useState<string>("landing");
+  const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
-  const [selectedUserId, setSelectedUserId] = useState<string>("user_citizen");
   const [issues, setIssues] = useState<CivicIssue[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [rewardsHistory, setRewardsHistory] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [leaderboard, setLeaderboard] = useState<UserProfile[]>([]);
   const [reportLocation, setReportLocation] = useState<LocationData | null>(null);
 
-  // Sync state on change of selected user profile (Role)
+  // Sync state on change of user
   useEffect(() => {
-    fetchProfile();
-    fetchIssues();
-    fetchNotifications();
-    fetchRewards();
-    fetchStats();
-  }, [selectedUserId]);
+    if (currentUser) {
+      fetchIssues();
+      fetchNotifications();
+      fetchRewards();
+      fetchStats();
+      fetchLeaderboard();
+    }
+  }, [currentUser]);
 
-  const fetchProfile = async () => {
+  const fetchLeaderboard = async () => {
     try {
-      const response = await fetch(`/api/auth/profile?userId=${selectedUserId}`);
+      const response = await fetch("/api/leaderboard");
       const data = await response.json();
-      setCurrentUser(data);
+      setLeaderboard(data);
     } catch (e) {
       console.error(e);
     }
   };
 
+  const handleLogin = (user: UserProfile) => {
+    setCurrentUser(user);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setActiveTab("dashboard");
+  };
+
+  const handleUpdateUser = (updatedUser: UserProfile) => {
+    setCurrentUser(updatedUser);
+  };
+
   const fetchIssues = async () => {
     try {
       const response = await fetch("/api/issues");
-      const data = await response.json();
-      setIssues(data);
+      if (response.ok) {
+        const data = await response.json();
+        setIssues(data);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -127,9 +146,11 @@ export default function App() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch(`/api/notifications?userId=${selectedUserId}`);
-      const data = await response.json();
-      setNotifications(data);
+      const response = await fetch(`/api/notifications?userId=${currentUser?.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setNotifications(data);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -137,9 +158,11 @@ export default function App() {
 
   const fetchRewards = async () => {
     try {
-      const response = await fetch(`/api/rewards?userId=${selectedUserId}`);
-      const data = await response.json();
-      setRewardsHistory(data);
+      const response = await fetch(`/api/rewards?userId=${currentUser?.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setRewardsHistory(data);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -148,31 +171,19 @@ export default function App() {
   const fetchStats = async () => {
     try {
       const response = await fetch("/api/analytics");
-      const data = await response.json();
-      setStats(data);
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data);
+      }
     } catch (e) {
       console.error(e);
     }
   };
 
   const handleRoleChange = async (newRole: UserRole) => {
-    let targetUserId = "user_citizen";
-    if (newRole === "Volunteer") targetUserId = "user_volunteer";
-    else if (newRole === "Department Officer") targetUserId = "user_officer";
-    else if (newRole === "Administrator" || newRole === "Super Admin") targetUserId = "user_admin";
-
-    try {
-      const response = await fetch("/api/auth/profile/role", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: targetUserId, newRole })
-      });
-      if (response.ok) {
-        setSelectedUserId(targetUserId);
-      }
-    } catch (e) {
-      console.error(e);
-    }
+    if (!currentUser) return;
+    const updatedUser = { ...currentUser, role: newRole };
+    handleLogin(updatedUser);
   };
 
   const handleVoteIssue = async (issueId: string) => {
@@ -180,7 +191,7 @@ export default function App() {
       const response = await fetch(`/api/issues/${issueId}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: selectedUserId })
+        body: JSON.stringify({ userId: currentUser?.id })
       });
       if (response.ok) {
         fetchIssues();
@@ -198,17 +209,17 @@ export default function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: selectedUserId,
+          userId: currentUser.id,
           userName: currentUser.name,
           status
         })
       });
       if (response.ok) {
         fetchIssues();
-        fetchProfile();
         fetchNotifications();
         fetchRewards();
         fetchStats();
+        fetchLeaderboard();
       }
     } catch (e) {
       console.error(e);
@@ -230,10 +241,10 @@ export default function App() {
       });
       if (response.ok) {
         fetchIssues();
-        fetchProfile();
         fetchNotifications();
         fetchRewards();
         fetchStats();
+        fetchLeaderboard();
       }
     } catch (e) {
       console.error(e);
@@ -245,7 +256,7 @@ export default function App() {
       await fetch("/api/notifications/read", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: selectedUserId })
+        body: JSON.stringify({ userId: currentUser?.id })
       });
       fetchNotifications();
     } catch (e) {
@@ -260,148 +271,20 @@ export default function App() {
 
   const handleIssueCreated = () => {
     fetchIssues();
-    fetchProfile();
     fetchNotifications();
     fetchRewards();
     fetchStats();
+    fetchLeaderboard();
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  if (activeTab === "landing") {
-    return (
-      <div className="min-h-screen bg-[#F8F9FA] flex flex-col justify-between" id="landing-screen">
-        
-        {/* Navigation row */}
-        <div className="mx-auto max-w-7xl w-full px-6 py-5 flex justify-between items-center shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4285F4] text-white shadow-sm">
-              <ShieldCheck className="h-5.5 w-5.5" />
-            </div>
-            <span className="font-sans text-lg font-bold text-[#202124]">
-              CivicHero <span className="text-[#4285F4]">AI</span>
-            </span>
-          </div>
-          <button
-            onClick={() => setActiveTab("dashboard")}
-            className="bg-[#4285F4] hover:bg-[#1967D2] text-white text-xs font-bold px-4 py-2.5 rounded-md transition-all shadow-sm"
-          >
-            Launch Platform
-          </button>
-        </div>
+  if (!currentUser) {
+    return <AuthPage onLogin={handleLogin} />;
+  }
 
-        {/* Hero Section */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center max-w-4xl mx-auto space-y-8 py-12">
-          
-          <div className="inline-flex items-center gap-1 bg-[#E8F0FE] border border-[#D2E3FC] text-[#1967D2] rounded-full px-3 py-1 text-[11px] font-bold font-mono tracking-wider uppercase animate-pulse">
-            <Sparkles className="h-3 w-3 text-amber-500 fill-amber-300" />
-            Google AI Studio Hackathon Core Entry
-          </div>
-
-          <div className="space-y-4">
-            <h1 className="font-sans text-4xl sm:text-6xl font-black tracking-tight text-[#202124] leading-none">
-              AI-Powered Hyperlocal <br />
-              <span className="bg-gradient-to-r from-[#4285F4] to-[#1967D2] bg-clip-text text-transparent">
-                Community Problem Solver
-              </span>
-            </h1>
-            <p className="text-[#5F6368] text-base max-w-2xl mx-auto leading-relaxed">
-              Transform standard complaint filing into an autonomous agent workflow. CivicHero AI combines Gemini vision diagnostics, geographical duplicate checking, trust audits, and predictive public analytics in a single secure dashboard.
-            </p>
-          </div>
-
-          {/* Quick-onboard User Selection buttons */}
-          <div className="space-y-3 w-full max-w-xl">
-            <p className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#5F6368]">Select an Onboarding Persona to Enter:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <button
-                onClick={() => {
-                  setSelectedUserId("user_citizen");
-                  setActiveTab("dashboard");
-                }}
-                className="flex items-center gap-2.5 p-3 rounded-xl border border-[#E0E0E0] bg-white hover:border-[#4285F4] hover:shadow-sm text-left transition-all group"
-              >
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100&q=80" className="h-10 w-10 rounded-lg object-cover shrink-0" />
-                <div className="truncate">
-                  <p className="text-xs font-bold text-[#202124] group-hover:text-[#1967D2]">Alex (Citizen)</p>
-                  <p className="text-[10px] text-[#5F6368] font-medium">Create reports</p>
-                </div>
-              </button>
-
-              <button
-                onClick={() => {
-                  setSelectedUserId("user_volunteer");
-                  setActiveTab("dashboard");
-                }}
-                className="flex items-center gap-2.5 p-3 rounded-xl border border-[#E0E0E0] bg-white hover:border-[#4285F4] hover:shadow-sm text-left transition-all group"
-              >
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80" className="h-10 w-10 rounded-lg object-cover shrink-0" />
-                <div className="truncate">
-                  <p className="text-xs font-bold text-[#202124] group-hover:text-[#1967D2]">Samantha (Volunteer)</p>
-                  <p className="text-[10px] text-[#5F6368] font-medium">Audit verifications</p>
-                </div>
-              </button>
-
-              <button
-                onClick={() => {
-                  setSelectedUserId("user_officer");
-                  setActiveTab("dashboard");
-                }}
-                className="flex items-center gap-2.5 p-3 rounded-xl border border-[#E0E0E0] bg-white hover:border-[#4285F4] hover:shadow-sm text-left transition-all group"
-              >
-                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&h=100&q=80" className="h-10 w-10 rounded-lg object-cover shrink-0" />
-                <div className="truncate">
-                  <p className="text-xs font-bold text-[#202124] group-hover:text-[#1967D2]">Marcus (Officer)</p>
-                  <p className="text-[10px] text-[#5F6368] font-medium">Dispatch repairs</p>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          {/* Core Pipeline Highlights */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 w-full pt-8 border-t border-gray-200">
-            <div className="flex flex-col items-center p-4 bg-white rounded-xl border border-[#E0E0E0] shadow-sm text-center">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E8F0FE] text-[#1967D2] mb-2">
-                <Sparkles className="h-5 w-5" />
-              </div>
-              <p className="text-xs font-bold text-[#202124]">1. Gemini Vision</p>
-              <p className="text-[10px] text-[#5F6368] mt-1 leading-snug">Extracts category, size, risks, and department routing.</p>
-            </div>
-
-            <div className="flex flex-col items-center p-4 bg-white rounded-xl border border-[#E0E0E0] shadow-sm text-center">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 mb-2">
-                <Cpu className="h-5 w-5" />
-              </div>
-              <p className="text-xs font-bold text-[#202124]">2. Duplicate Sweep</p>
-              <p className="text-[10px] text-[#5F6368] mt-1 leading-snug">Autonomous radius search within 150m to avoid repeat files.</p>
-            </div>
-
-            <div className="flex flex-col items-center p-4 bg-white rounded-xl border border-[#E0E0E0] shadow-sm text-center">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-50 text-rose-600 mb-2">
-                <Shield className="h-5 w-5" />
-              </div>
-              <p className="text-xs font-bold text-[#202124]">3. Crowd Audits</p>
-              <p className="text-[10px] text-[#5F6368] mt-1 leading-snug">Geolocated citizens vote to verify and escalate reports.</p>
-            </div>
-
-            <div className="flex flex-col items-center p-4 bg-white rounded-xl border border-[#E0E0E0] shadow-sm text-center">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-500 mb-2">
-                <Gift className="h-5 w-5" />
-              </div>
-              <p className="text-xs font-bold text-[#202124]">4. Hero Gamify</p>
-              <p className="text-[10px] text-[#5F6368] mt-1 leading-snug">Earn progressive point levels and claim badged rewards.</p>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Footer */}
-        <div className="py-6 border-t border-gray-100 shrink-0 text-center text-[10px] font-mono text-[#5F6368]">
-          CIVICHERO AI • DESIGNED IN DEEPMIND WORKSPACE • POWERED BY GEMINI 3.5 FLASH
-        </div>
-
-      </div>
-    );
+  if (activeTab === "profile") {
+    return <ProfilePage user={currentUser} onUpdate={handleUpdateUser} onBack={() => setActiveTab("dashboard")} />;
   }
 
   return (
@@ -415,6 +298,7 @@ export default function App() {
           activeTab={activeTab} 
           setActiveTab={setActiveTab}
           notificationCount={unreadCount}
+          onLogout={handleLogout}
         />
       )}
 
@@ -591,10 +475,7 @@ export default function App() {
         {activeTab === "leaderboard" && currentUser && (
           <Leaderboard 
             currentUser={currentUser} 
-            leaderboardData={issues.reduce((acc: any[], curr) => {
-              // Standard simulated leaders
-              return acc;
-            }, [...DEFAULT_USERS])} // fallback seed
+            leaderboardData={leaderboard}
           />
         )}
 
